@@ -1,0 +1,139 @@
+apply plugin: 'com.android.library'
+apply plugin: 'maven-publish'
+
+def LIB_GROUP_ID = 'id.durianpay'
+def LIB_ARTIFACT_ID = 'android-sdk'
+def LIB_VERSION = '1.5.4'
+
+// Load credentials for GitHub Packages
+Properties properties = new Properties()
+properties.load(project.rootProject.file('local.properties').newDataInputStream())
+def git_username = properties.getProperty('gpr.usr')
+def git_PAT = properties.getProperty('gpr.key')
+
+// Task to create a sources jar
+task sourceJar(type: Jar) {
+    from android.sourceSets.main.java.srcDirs
+    archiveClassifier.set("sources") // Updated to use new Gradle API
+}
+
+android {
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
+
+    defaultConfig {
+        minSdkVersion 29
+        targetSdkVersion 30
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "LOCAL_CHECKOUT_URL", '"http://192.168.43.111:4000/public"'
+            buildConfigField "String", "CHECKOUT_URL", '"https://checkout.durianpay.id/public"'
+            buildConfigField "String", "SNOWPLOW_URL", '"staging-stats.durianpay.id"'
+        }
+        debug {
+            minifyEnabled false
+            useProguard false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField "String", "LOCAL_CHECKOUT_URL", '"http://192.168.43.111:4000/public"'
+            buildConfigField "String", "CHECKOUT_URL", '"https://checkout.durianpay.id/public"'
+            buildConfigField "String", "SNOWPLOW_URL", '"stats.durianpay.id"'
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        abortOnError false // To prevent build failures from lint errors
+    }
+}
+
+dependencies {
+    implementation fileTree(dir: "libs", include: ["*.jar"])
+
+    implementation 'androidx.appcompat:appcompat:1.2.0'
+    implementation 'androidx.constraintlayout:constraintlayout:2.0.1'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'androidx.work:work-runtime:2.5.0'
+    testImplementation 'junit:junit:4.12'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    testImplementation 'org.mockito:mockito-core:1.10.19'
+
+    compileOnly 'org.projectlombok:lombok:1.18.12'
+    annotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.12'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.12'
+
+    // Sentry
+    api 'io.sentry:sentry-android:1.7.10'
+    api 'io.sentry:sentry:1.7.10'
+
+    // Retrofit Gson converter
+    implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
+
+    // Snowplow-Android-Tracker
+    implementation 'com.snowplowanalytics:snowplow-android-tracker:1.7.0@aar'
+}
+
+publishing {
+    publications {
+        durianpaysdkPublication(MavenPublication) {
+            groupId = LIB_GROUP_ID
+            artifactId = LIB_ARTIFACT_ID
+            version = LIB_VERSION
+            artifact("$buildDir/outputs/aar/durianpaysdk-release.aar")
+
+            artifact(sourceJar) // Attach sources jar to publication
+
+            pom.withXml {
+                def dependenciesNode = asNode().appendNode('dependencies')
+                // Work runtime dependency
+                def dependencyNodeWork = dependenciesNode.appendNode('dependency')
+                dependencyNodeWork.appendNode('groupId', 'androidx.work')
+                dependencyNodeWork.appendNode('artifactId', 'work-runtime')
+                dependencyNodeWork.appendNode('version', '2.5.0')
+
+                // Sentry dependency
+                def dependencyNodeSentry = dependenciesNode.appendNode('dependency')
+                dependencyNodeSentry.appendNode('groupId', 'io.sentry')
+                dependencyNodeSentry.appendNode('artifactId', 'sentry-android')
+                dependencyNodeSentry.appendNode('version', '1.7.10')
+
+                // Snowplow dependency
+                def dependencyNodeSnowplow = dependenciesNode.appendNode('dependency')
+                dependencyNodeSnowplow.appendNode('groupId', 'com.snowplowanalytics')
+                dependencyNodeSnowplow.appendNode('artifactId', 'snowplow-android-tracker')
+                dependencyNodeSnowplow.appendNode('version', '1.7.0')
+
+                // Retrofit Gson converter dependency
+                def dependencyNodeGson = dependenciesNode.appendNode('dependency')
+                dependencyNodeGson.appendNode('groupId', 'com.squareup.retrofit2')
+                dependencyNodeGson.appendNode('artifactId', 'converter-gson')
+                dependencyNodeGson.appendNode('version', '2.3.0')
+            }
+        }
+    }
+
+    repositories {
+        maven {
+            name = 'GitHubPackages'
+            url = uri("https://maven.pkg.github.com/durianpay/android-sdk")
+            credentials {
+                username = git_username
+                password = git_PAT
+            }
+        }
+    }
+}

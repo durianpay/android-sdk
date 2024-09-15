@@ -1,0 +1,41 @@
+{
+  "svg": [
+    "https://checkout.durianpay.id/static/promo_icon.svg",
+    "https://checkout.durianpay.id/static/check_circle.svg",
+    "https://checkout.durianpay.id/static/wallet-cleanwhite.svg",
+    "https://checkout.durianpay.id/static/bank-logo-bca.svg",
+    "https://checkout.durianpay.id/static/img_success.svg",
+    "https://checkout.durianpay.id/static/img_failed.svg",
+    "https://checkout.durianpay.id/static/promo-error.svg",
+    "https://checkout.durianpay.id/static/img_failed.svg",
+    "https://checkout.durianpay.id/static/ico_arrow-down.svg",
+    "https://checkout.durianpay.id/static/bank-logo-mandiri.svg",
+    "https://checkout.durianpay.id/static/bank-logo-bri.svg",
+    "https://checkout.durianpay.id/static/bank-logo-bni.svg",
+    "https://checkout.durianpay.id/static/bank-logo-permata.svg",
+    "https://js.durianpay.id/assets/img_credit-card.svg",
+    "https://js.durianpay.id/assets/img_ovo.svg",
+    "https://js.durianpay.id/assets/img_dana.svg",
+    "https://js.durianpay.id/assets/img_linkaja.svg",
+    "https://js.durianpay.id/assets/img_transfer-bank.svg"
+  ],
+  "url": [
+    "https://checkout.durianpay.id/static/arrow_next.png",
+    "https://checkout.durianpay.id/static/img_ovo.png",
+    "https://checkout.durianpay.id/static/image.png",
+    "https://pigment.github.io/fake-logos/logos/medium/color/6.png",
+    "https://checkout.durianpay.id/static/img_visa-logo.png",
+    "https://checkout.durianpay.id/static/img_mastercard-logo.png",
+    "https://checkout.durianpay.id/static/img_jcb-logo.png",
+    "https://checkout.durianpay.id/static/img_amex-logo.png",
+    "https://checkout.durianpay.id/static/phone.png",
+    "https://checkout.durianpay.id/static/atm.png",
+    "https://checkout.durianpay.id/static/internet_banking.png"
+  ],
+  "js": [
+
+  ],
+  "css": [
+    "https://checkout.durianpay.id/static/checkout.css"
+  ]
+}

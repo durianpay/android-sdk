@@ -1,0 +1,9 @@
+<resources>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="msg_qris_file_downloaded">QRIS Download Completed</string>
+    <string name="qris_download">Qris_</string>
+    <string name="qris_notification">0001</string>
+    <string name="error_download">Error Downloading File</string>
+
+</resources>
